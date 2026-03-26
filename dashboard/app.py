@@ -183,11 +183,37 @@ else:
 
         with tabs[1]:
             st.subheader("Monthly Sales Comparison")
-            st.image("dashboard/graphs/monthly_comparison.png", width="stretch")
+            if ("Croissant" in available_products) and (("Americano" in available_products)or("Cappuccino" in available_products)):
+                st.image("dashboard/graphs/monthly_comparison.png", width="stretch")
+                st.divider()
+
+            elif ("Americano" in available_products)or("Cappuccino" in available_products):
+                st.image("dashboard/graphs/monthly_coffees.png", width="stretch")
+                st.divider()
+
+            elif "Croissant" in available_products:
+                st.image("dashboard/graphs/monthly_croissants.png", width="stretch")
+                st.divider()
+            else:
+                st.info("No valid products found for monthly comparison.")
 
         with tabs[2]:
             st.subheader("Average Sales by Day of Week")
-            st.image("dashboard/graphs/average_sales.png", width="stretch")
+            if ("Croissant" in available_products) and (("Americano" in available_products)or("Cappuccino" in available_products)):
+                st.image("dashboard/graphs/average_sales.png", width="stretch")
+                st.divider()
+
+            elif ("Americano" in available_products)or("Cappuccino" in available_products):
+                st.image("dashboard/graphs/averageDailySales_coffees.png", width="stretch")
+                st.divider()
+
+            elif "Croissant" in available_products:
+                st.image("dashboard/graphs/averageDailySales_croissants.png", width="stretch")
+                st.divider()
+            else:
+                st.info("No valid products found for average daily sales.")
+
+       
 
         with tabs[3]:
 
