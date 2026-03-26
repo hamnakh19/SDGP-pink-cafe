@@ -36,10 +36,8 @@ if not uploaded_file:
 else:
     dfs = []
 
-    # ===== DATA CLEANING =====
     for file in uploaded_file:
 
-        # extra safety check
         if not file.name.endswith(".csv"):
             st.error(f"{file.name} is not a CSV file")
             continue
@@ -98,10 +96,8 @@ else:
     # detect available products
     available_products = filtered_df["product"].unique() if not filtered_df.empty else []
 
-    # ===== TRAINING WINDOW =====
     training_weeks = st.slider("Forecast Horizon (weeks)", 4, 8, 6)
 
-    # ===== METRICS =====
     if filtered_df.empty:
         total_units = 0
         best_product = "N/A"
@@ -115,7 +111,6 @@ else:
 
     left_col, right_col = st.columns([1, 3])
 
-    # ===== LEFT PANEL =====
     with left_col:
         st.markdown('<div class="section-header">Business Overview</div>', unsafe_allow_html=True)
 
@@ -160,7 +155,6 @@ else:
             </div>
             """, unsafe_allow_html=True)
 
-    # ===== TABS =====
     with right_col:
 
         tabs = st.tabs([
@@ -170,7 +164,6 @@ else:
             "Forecast Models"
         ])
 
-        # ===== DAILY =====
         with tabs[0]:
             st.subheader("Daily Sales")
 
@@ -188,17 +181,14 @@ else:
                 st.markdown("### ☕ Cappuccino")
                 st.image("dashboard/graphs/cappuccino_daily.png", width="stretch")
 
-        # ===== MONTHLY =====
         with tabs[1]:
             st.subheader("Monthly Sales Comparison")
             st.image("dashboard/graphs/monthly_comparison.png", width="stretch")
 
-        # ===== WEEKDAY =====
         with tabs[2]:
             st.subheader("Average Sales by Day of Week")
             st.image("dashboard/graphs/average_sales.png", width="stretch")
 
-        # ===== FORECAST =====
         with tabs[3]:
 
             st.subheader("Model Evaluation & Forecasting")
