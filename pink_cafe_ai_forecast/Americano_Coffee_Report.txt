@@ -1,0 +1,26 @@
+
+================================================================================
+PINK CAFÉ - AMERICANO COFFEE AI MODEL ANALYSIS
+================================================================================
+
+BEST MODEL: Linear Regression
+  • MAPE: 0.00%
+  • MAE:  0.00 units
+  • RMSE: 0.00 units
+  • R²:   1.0000
+
+ALL MODELS:
+            Model         RMSE          MAE         MAPE        R2
+Linear Regression 7.403686e-14 5.988860e-14 5.823076e-14  1.000000
+ Ridge Regression 1.243273e+00 9.925368e-01 9.695673e-01  0.967279
+    Random Forest 3.091883e+00 2.364286e+00 2.338019e+00  0.797634
+Gradient Boosting 3.791890e+00 2.785476e+00 2.728455e+00  0.695629
+              SVR 9.212686e+00 7.979748e+00 7.672706e+00 -0.796654
+
+INTERPRETATION:
+On average, predictions are off by 0.00 units per day.
+This represents a 0.00% error rate.
+Model explains 100.0% of variance in sales.
+
+Generated: 2026-02-15 21:43:24
+================================================================================

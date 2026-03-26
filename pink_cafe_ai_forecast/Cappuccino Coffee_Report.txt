@@ -1,0 +1,14 @@
+
+BEST MODEL: Linear Regression
+
+MAPE:0.00
+MAE:0.00
+RMSE:0.00
+R2:1.0000
+
+               Model          RMSE           MAE          MAPE        R2
+0  Linear Regression  3.278191e-14  2.892924e-14  3.074367e-14  1.000000
+1   Ridge Regression  4.841119e+00  3.634730e+00  3.750544e+00  0.866695
+2      Random Forest  8.857590e+00  6.640000e+00  6.791319e+00  0.553744
+3  Gradient Boosting  1.097583e+01  8.408369e+00  8.845297e+00  0.314783
+4                SVR  1.862092e+01  1.594730e+01  1.582733e+01 -0.972222
