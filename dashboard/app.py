@@ -14,7 +14,7 @@ st.markdown("""
 .section-header {font-size: 18px; font-weight: 600; margin-bottom: 10px; color: #1E0F2E;}
 .metric-card {background: linear-gradient(180deg, #2A153F, #1E0F2E); padding: 20px; border-radius: 14px; margin-bottom: 20px; border-left: 6px solid #E75480;}
 .metric-title {font-size: 14px; color: #E8D8E6;}
-.metric-value {font-size: 28px; font-weight: bold; color: white;}
+.metric-value {font-size: 26px; font-weight: bold; color: white;}
 section[data-testid="stSidebar"] {background-color: #1E0F2E;}
 section[data-testid="stSidebar"] * {color: white;}
 </style>
@@ -38,6 +38,12 @@ else:
 
     # ===== DATA CLEANING =====
     for file in uploaded_file:
+
+        # extra safety check
+        if not file.name.endswith(".csv"):
+            st.error(f"{file.name} is not a CSV file")
+            continue
+
         temp_df = pd.read_csv(file)
         temp_df.columns = temp_df.columns.str.strip()
 
@@ -62,6 +68,10 @@ else:
 
         dfs.append(temp_df)
 
+    if not dfs:
+        st.warning("Please upload valid CSV files.")
+        st.stop()
+
     df = pd.concat(dfs, ignore_index=True)
 
     df = df.rename(columns={"Date": "date"})
@@ -85,22 +95,27 @@ else:
         (df["date"] <= pd.to_datetime(end_date))
     ]
 
+    # detect available products
+    available_products = filtered_df["product"].unique() if not filtered_df.empty else []
+
     # ===== TRAINING WINDOW =====
-    training_weeks = st.slider("Training Period (weeks)", 4, 8, 6)
+    training_weeks = st.slider("Forecast Horizon (weeks)", 4, 8, 6)
 
     # ===== METRICS =====
     if filtered_df.empty:
         total_units = 0
         best_product = "N/A"
+        stats = pd.DataFrame()
     else:
         total_units = filtered_df["number_sold"].sum()
         best_product = filtered_df.groupby("product")["number_sold"].sum().idxmax()
+        stats = filtered_df.groupby("product")["number_sold"].agg(["mean", "std"]).round(2)
 
     num_days = (pd.to_datetime(end_date) - pd.to_datetime(start_date)).days
 
     left_col, right_col = st.columns([1, 3])
 
-    # ===== BUSINESS OVERVIEW =====
+    # ===== LEFT PANEL =====
     with left_col:
         st.markdown('<div class="section-header">Business Overview</div>', unsafe_allow_html=True)
 
@@ -125,6 +140,26 @@ else:
         </div>
         """, unsafe_allow_html=True)
 
+        if not stats.empty:
+            most_stable = stats["std"].idxmin()
+            most_volatile = stats["std"].idxmax()
+
+            st.markdown('<div class="section-header">Product Insights</div>', unsafe_allow_html=True)
+
+            st.markdown(f"""
+            <div class="metric-card">
+                <div class="metric-title">Most Stable</div>
+                <div class="metric-value">{most_stable}</div>
+            </div>
+            """, unsafe_allow_html=True)
+
+            st.markdown(f"""
+            <div class="metric-card">
+                <div class="metric-title">Most Volatile</div>
+                <div class="metric-value">{most_volatile}</div>
+            </div>
+            """, unsafe_allow_html=True)
+
     # ===== TABS =====
     with right_col:
 
@@ -139,18 +174,19 @@ else:
         with tabs[0]:
             st.subheader("Daily Sales")
 
-            st.markdown("### 🥐 Croissant")
-            st.image("dashboard/graphs/croissant_daily.png", width="stretch")
+            if "Croissant" in available_products:
+                st.markdown("### 🥐 Croissant")
+                st.image("dashboard/graphs/croissant_daily.png", width="stretch")
+                st.divider()
 
-            st.divider()
+            if "Americano" in available_products:
+                st.markdown("### ☕ Americano")
+                st.image("dashboard/graphs/americano_daily.png", width="stretch")
+                st.divider()
 
-            st.markdown("### ☕ Americano")
-            st.image("dashboard/graphs/americano_daily.png", width="stretch")
-
-            st.divider()
-
-            st.markdown("### ☕ Cappuccino")
-            st.image("dashboard/graphs/cappuccino_daily.png", width="stretch")
+            if "Cappuccino" in available_products:
+                st.markdown("### ☕ Cappuccino")
+                st.image("dashboard/graphs/cappuccino_daily.png", width="stretch")
 
         # ===== MONTHLY =====
         with tabs[1]:
@@ -165,57 +201,46 @@ else:
         # ===== FORECAST =====
         with tabs[3]:
 
-            st.subheader("Forecast Models")
+            st.subheader("Model Evaluation & Forecasting")
 
-            st.info(f"Training Window: {training_weeks} weeks | Best Model: Linear Regression (MAPE 8.3%)")
+            st.info(f"Forecast Horizon: {training_weeks} weeks | Best Model: Linear Regression (MAPE 8.3%)")
 
-            # Prediction Table
-            st.subheader("Predicted Sales Table")
-
+            # Prediction table
             if not filtered_df.empty:
                 avg_sales = filtered_df.groupby("product")["number_sold"].mean()
-                future_days = training_weeks * 7
-                predictions = avg_sales * future_days
+                predictions = avg_sales * (training_weeks * 7)
 
                 pred_df = predictions.reset_index()
-                pred_df.columns = ["Product", f"Predicted Sales (Next {training_weeks} Weeks)"]
+                pred_df.columns = ["Product", f"Predicted Sales ({training_weeks} weeks)"]
 
                 st.dataframe(pred_df)
-            else:
-                st.write("No data available")
 
             st.divider()
 
-            # ===== AMERICANO =====
-            with st.expander("☕ Americano Forecast", expanded=True):
-                st.markdown("### Forecast")
-                st.image("dashboard/graphs/Americano_Coffee_Forecast.png", width="stretch")
+            products_config = {
+                "Americano": "Americano_Coffee",
+                "Cappuccino": "Cappuccino_Coffee",
+                "Croissant": "Croissant"
+            }
 
-                st.markdown("### Model Performance")
-                col1, col2 = st.columns(2)
-                col1.image("dashboard/graphs/Americano_Coffee_Performance.png", width="stretch")
-                col2.image("dashboard/graphs/Americano_Coffee_Heatmap.png", width="stretch")
+            for product, name in products_config.items():
+                if product in available_products:
 
-            st.divider()
+                    st.markdown(f"## {product}")
 
-            # ===== CAPPUCCINO =====
-            with st.expander("☕ Cappuccino Forecast"):
-                st.markdown("### Forecast")
-                st.image("dashboard/graphs/Cappuccino_Coffee_Forecast.png", width="stretch")
+                    st.markdown("### Forecast")
+                    st.image(f"dashboard/graphs/{name}_Forecast.png", width="stretch")
 
-                st.markdown("### Model Performance")
-                col1, col2 = st.columns(2)
-                col1.image("dashboard/graphs/Cappuccino_Coffee_Performance.png", width="stretch")
-                col2.image("dashboard/graphs/Cappuccino_Coffee_Heatmap.png", width="stretch")
+                    st.markdown("### Model Performance")
+                    col1, col2 = st.columns(2)
+                    col1.image(f"dashboard/graphs/{name}_Performance.png", width="stretch")
+                    col2.image(f"dashboard/graphs/{name}_Heatmap.png", width="stretch")
 
-            st.divider()
+                    if product == "Americano":
+                        st.markdown("📊 Stable demand → most accurate predictions")
+                    elif product == "Cappuccino":
+                        st.markdown("📊 Moderate variability → slightly higher error")
+                    else:
+                        st.markdown("📊 High volatility → harder to predict")
 
-            # ===== CROISSANT =====
-            with st.expander("🥐 Croissant Forecast"):
-                st.markdown("### Forecast")
-                st.image("dashboard/graphs/Croissant_Forecast.png", width="stretch")
-
-                st.markdown("### Model Performance")
-                col1, col2 = st.columns(2)
-                col1.image("dashboard/graphs/Croissant_Performance.png", width="stretch")
-                col2.image("dashboard/graphs/Croissant_Heatmap.png", width="stretch")
+                    st.divider()
