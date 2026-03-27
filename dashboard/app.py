@@ -3,7 +3,7 @@ import pandas as pd
 import datetime
 
 st.set_page_config(
-    page_title="Bristol Pink Bakery Dashboard",
+    page_title="Bristol-Pink Bakery Dashboard",
     layout="wide"
 )
 
