@@ -21,10 +21,10 @@ section[data-testid="stSidebar"] * {color: white;}
 """, unsafe_allow_html=True)
 
 # Sidebar
-st.sidebar.markdown("## 🧁 Bristol Pink Bakery")
+st.sidebar.markdown("## 🧁 Bristol-Pink Bakery")
 
 # Title
-st.markdown('<div class="main-title">Bristol Pink Bakery</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-title">Bristol-Pink Bakery</div>', unsafe_allow_html=True)
 st.markdown('<div class="subtitle">Operational Sales Forecast Dashboard</div>', unsafe_allow_html=True)
 
 # Upload CSV
