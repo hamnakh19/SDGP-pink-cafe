@@ -28,7 +28,7 @@ class PinkCafeAI:
     def load_data(self):
         """Load and engineer features"""
         print(f"\n{'='*70}")
-        print(f"📊 LOADING: {self.product_name}")
+        print(f"LOADING: {self.product_name}")
         print(f"{'='*70}")
         
         self.df = pd.read_csv(self.filepath)
@@ -63,7 +63,7 @@ class PinkCafeAI:
     def split_data(self, train_weeks=8, test_weeks=4): 
         """Split into 8 weeks train, 4 weeks test"""
         print(f"\n{'='*70}")
-        print(f"🔧 TRAIN/TEST SPLIT")
+        print(f"TRAIN/TEST SPLIT")
         print(f"{'='*70}")
         
         test_days = test_weeks * 7
@@ -94,7 +94,7 @@ class PinkCafeAI:
     def train_models(self, X_train, X_test, y_train, y_test):
         """Train 5 models"""
         print(f"\n{'='*70}")
-        print(f"🤖 TRAINING MODELS")
+        print(f"TRAINING MODELS")
         print(f"{'='*70}")
         
         models = {
@@ -123,14 +123,14 @@ class PinkCafeAI:
             print(f"{name:22} MAPE: {mape:6.2f}%  MAE: {mae:5.2f}")
         
         results_df = pd.DataFrame(results).sort_values('MAPE')
-        print(f"\n🏆 BEST: {results_df.iloc[0]['Model']} (MAPE: {results_df.iloc[0]['MAPE']:.2f}%)")
+        print(f"\nBEST: {results_df.iloc[0]['Model']} (MAPE: {results_df.iloc[0]['MAPE']:.2f}%)")
         
         return results_df, predictions
     
     def visualize(self, test_df, train_df, predictions, y_test, results_df):
         """Create 6-panel visualization"""
         print(f"\n{'='*70}")
-        print(f"📈 CREATING VISUALIZATION")
+        print(f"CREATING VISUALIZATION")
         print(f"{'='*70}")
         
         fig = plt.figure(figsize=(20, 12))
@@ -276,7 +276,7 @@ Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
             all_results.append(results_df)
             
         except Exception as e:
-            print(f"❌ Error: {str(e)}")
+            print(f"Error: {str(e)}")
     
     if all_results:
         combined = pd.concat(all_results)
@@ -284,12 +284,12 @@ Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
         print(f"\n✓ Saved: All_Models_Results.csv")
     
     print("\n" + "="*80)
-    print("✅ COMPLETE!")
+    print("COMPLETE!")
     print("="*80)
     print("\nGenerated Files:")
-    print("  📊 3 PNG visualizations")
-    print("  📄 3 TXT reports")
-    print("  📈 1 CSV results file")
+    print("3 PNG visualizations")
+    print("3 TXT reports")
+    print("1 CSV results file")
     print("="*80 + "\n")
 
 if __name__ == "__main__":
