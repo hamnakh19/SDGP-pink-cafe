@@ -28,7 +28,7 @@ class PinkCafeAI:
     def load_data(self):
         """Load and engineer features"""
         print(f"\n{'='*70}")
-        print(f"📊 LOADING: {self.product_name}")
+        print(f" LOADING: {self.product_name}")
         print(f"{'='*70}")
         
         self.df = pd.read_csv(self.filepath)
@@ -123,7 +123,7 @@ class PinkCafeAI:
             print(f"{name:22} MAPE: {mape:6.2f}%  MAE: {mae:5.2f}")
         
         results_df = pd.DataFrame(results).sort_values('MAPE')
-        print(f"\n🏆 BEST: {results_df.iloc[0]['Model']} (MAPE: {results_df.iloc[0]['MAPE']:.2f}%)")
+        print(f"\n BEST: {results_df.iloc[0]['Model']} (MAPE: {results_df.iloc[0]['MAPE']:.2f}%)")
         
         return results_df, predictions
     
