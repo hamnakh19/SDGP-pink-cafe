@@ -63,7 +63,7 @@ class PinkCafeAI:
     def split_data(self, train_weeks=8, test_weeks=4):
         """Split into 8 weeks train, 4 weeks test"""
         print(f"\n{'='*70}")
-        print(f"🔧 TRAIN/TEST SPLIT")
+        print(f" TRAIN/TEST SPLIT")
         print(f"{'='*70}")
         
         test_days = test_weeks * 7
@@ -94,7 +94,7 @@ class PinkCafeAI:
     def train_models(self, X_train, X_test, y_train, y_test):
         """Train 5 models"""
         print(f"\n{'='*70}")
-        print(f"🤖 TRAINING MODELS")
+        print(f" TRAINING MODELS")
         print(f"{'='*70}")
         
         models = {
